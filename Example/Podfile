@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MZPushModalView_Example', :exclusive => true do
+  pod 'MZPushModalView', :path => '../'
+end
+
+target 'MZPushModalView_Tests', :exclusive => true do
+  pod 'MZPushModalView', :path => '../'
+
+  
+end
