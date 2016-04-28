@@ -1,0 +1,14 @@
+PODS:
+  - MZPushModalView (0.1.0)
+
+DEPENDENCIES:
+  - MZPushModalView (from `../`)
+
+EXTERNAL SOURCES:
+  MZPushModalView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  MZPushModalView: b673d7ba1c759795104aec6839320db493fbcabf
+
+COCOAPODS: 0.39.0

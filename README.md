@@ -17,7 +17,7 @@ MZPushModalView is available through [CocoaPods](http://cocoapods.org). To insta
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "MZPushModalView"
+pod "MZPushModalView", :git => 'https://github.com/monzy613/MZPushModalView.git'
 ```
 
 ## Author
