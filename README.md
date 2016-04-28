@@ -5,9 +5,17 @@
 [![License](https://img.shields.io/cocoapods/l/MZPushModalView.svg?style=flat)](http://cocoapods.org/pods/MZPushModalView)
 [![Platform](https://img.shields.io/cocoapods/p/MZPushModalView.svg?style=flat)](http://cocoapods.org/pods/MZPushModalView)
 
+# snapshots
+![image](https://raw.githubusercontent.com/monzy613/MZPushModalView/master/snapshots/1.png)
+
 ## Usage
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
+
+## snapshots
+![img](https://raw.githubusercontent.com/monzy613/MZPushModalView/master/snapshots/1.png)
+![img](https://raw.githubusercontent.com/monzy613/MZPushModalView/master/snapshots/2.png)
+![img](https://raw.githubusercontent.com/monzy613/MZPushModalView/master/snapshots/3.png)
 
 ## Requirements
 
