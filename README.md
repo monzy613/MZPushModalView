@@ -39,7 +39,7 @@ To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "MZPushModalView", :git => 'https://github.com/monzy613/MZPushModalView.git'
+pod "MZPushModalView"
 ```
 
 ## Author
