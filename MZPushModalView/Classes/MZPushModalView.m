@@ -6,7 +6,6 @@
 //
 //
 
-static const CGFloat ANGLE = M_PI_4 / 3;
 static NSTimeInterval durationBack = 0.25;
 static NSTimeInterval durationForward = 0.25;
 
@@ -17,6 +16,9 @@ static NSTimeInterval durationForward = 0.25;
 @property (nonatomic) UIImageView *snapShotView;
 @property (nonatomic) UIView *modalView;
 @property (nonatomic) UIView *blackView;
+@property (nonatomic, readonly) CGFloat angle;
+@property (nonatomic, readonly) CGPoint modalViewShowCenter;
+@property (nonatomic, readonly) CGPoint modalViewDismissCenter;
 @end
 
 @implementation MZPushModalView
@@ -26,22 +28,32 @@ static NSTimeInterval durationForward = 0.25;
     MZPushModalView *pushModalView = [[MZPushModalView alloc] initWithModalView:modalView rootView:rootView];
     [pushModalView.rootView addSubview:pushModalView];
     [pushModalView showModal];
+    return pushModalView;
+}
+
++ (instancetype)showModalView:(UIView *)modalView rootView:(UIView *)rootView direction:(MZPushModalViewShowDirection)direction
+{
+    MZPushModalView *pushModalView = [[MZPushModalView alloc] initWithModalView:modalView rootView:rootView];
+    pushModalView.direction = direction;
+    [pushModalView.rootView addSubview:pushModalView];
+    [pushModalView showModal];
+    return pushModalView;
 }
 
 - (instancetype)initWithModalView:(UIView *)modalView rootView:(UIView *)rootView
 {
-    self = [super initWithFrame:rootView.bounds];
+    UIView *root = rootView == nil? [MZPushModalView mainWindow]: rootView;
+    self = [super initWithFrame:root.bounds];
     if (self) {
-        self.rootView = rootView;
+        self.rootView = root;
         self.modalView = modalView;
         self.snapShotView = [self snapShot:self.rootView];
         self.height = self.modalView.bounds.size.height;
         [self addSubview:self.blackView];
         [self addSubview:self.snapShotView];
         [self addSubview:self.modalView];
-        self.modalView.layer.transform = CATransform3DMakeTranslation(0, 0, sin(ANGLE) * CGRectGetHeight(self.bounds) / 2);
-        self.modalView.center = CGPointMake(self.center.x, self.bounds.size.height + self.height / 2);
-        [rootView addSubview:self];
+        self.modalView.layer.transform = CATransform3DMakeTranslation(0, 0, sin(self.angle) * CGRectGetHeight(self.bounds) / 2);
+        self.direction = MZPushModalViewShowFromBottom;
     }
     return self;
 }
@@ -56,16 +68,16 @@ static NSTimeInterval durationForward = 0.25;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissModal)];
     [self.snapShotView addGestureRecognizer:tap];
     [self.blackView addGestureRecognizer:tap];
+
     [UIView animateWithDuration:[self totalDuration] animations:^{
-        CGPoint showCenter = CGPointMake(self.center.x, self.bounds.size.height - self.height / 2);
-        self.modalView.center = showCenter;
+        self.modalView.center = self.modalViewShowCenter;
     } completion:^(BOOL finished) {
         if (finished) {
             self.animating = NO;
         }
     }];
 
-    CGFloat zMove = -sin(ANGLE) * CGRectGetHeight(self.bounds) / 2;
+    CGFloat zMove = -fabs(sin(self.angle) * CGRectGetHeight(self.bounds) / 2);
     for (UIView *subview in [self subviews]) {
         if (![subview isEqual:self.snapShotView] && ![subview isEqual:self.modalView]) {
             subview.layer.transform = CATransform3DTranslate(CATransform3DIdentity, 0, 0, zMove * 2);
@@ -76,7 +88,7 @@ static NSTimeInterval durationForward = 0.25;
         //dismissOldView
         CATransform3D transform = CATransform3DIdentity;
         transform.m34 = -1.0 / 500.0;
-        transform = CATransform3DRotate(transform, ANGLE, 1, 0, 0);
+        transform = CATransform3DRotate(transform, self.angle, 1, 0, 0);
         transform = CATransform3DTranslate(transform, 0, 0, zMove);
         self.snapShotView.layer.transform = transform;
     } completion:^(BOOL finished) {
@@ -84,7 +96,7 @@ static NSTimeInterval durationForward = 0.25;
             [UIView animateWithDuration:durationForward animations:^{
                 CATransform3D transform = self.snapShotView.layer.transform;
                 transform.m34 = -1.0 / 500.0;
-                transform = CATransform3DRotate(transform, -ANGLE, 1, 0, 0);
+                transform = CATransform3DRotate(transform, -self.angle, 1, 0, 0);
                 self.snapShotView.layer.transform = transform;
             }];
         }
@@ -99,8 +111,7 @@ static NSTimeInterval durationForward = 0.25;
         self.animating = YES;
     }
     [UIView animateWithDuration:[self totalDuration] animations:^{
-        CGPoint showCenter = CGPointMake(self.center.x, self.bounds.size.height + self.height / 2);
-        self.modalView.center = showCenter;
+        self.modalView.center = self.modalViewDismissCenter;
     } completion:^(BOOL finished) {
         if (finished) {
             self.animating = NO;
@@ -111,7 +122,7 @@ static NSTimeInterval durationForward = 0.25;
 
     [UIView animateWithDuration:durationBack animations:^{
         CATransform3D transform = self.snapShotView.layer.transform;
-        transform = CATransform3DRotate(transform, ANGLE, 1, 0, 0);
+        transform = CATransform3DRotate(transform, self.angle, 1, 0, 0);
         transform.m34 = -1.0 / 500.0;
         self.snapShotView.layer.transform = transform;
     } completion:^(BOOL finished) {
@@ -137,6 +148,18 @@ static NSTimeInterval durationForward = 0.25;
 }
 
 #pragma mark - privates
++ (UIView *)mainWindow
+{
+    NSEnumerator *frontToBackWindows = [[[UIApplication sharedApplication] windows] reverseObjectEnumerator];
+
+    for (UIWindow *window in frontToBackWindows)
+        if (window.windowLevel == UIWindowLevelNormal) {
+            return window;
+        }
+    return nil;
+}
+
+
 - (UIImageView *)snapShot:(UIView *)view
 {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0);
@@ -147,7 +170,45 @@ static NSTimeInterval durationForward = 0.25;
     return imageView;
 }
 
-#pragma mark - getters
+#pragma mark - getters setters
+- (void)setDirection:(MZPushModalViewShowDirection)direction
+{
+    _direction = direction;
+    switch (_direction) {
+        case MZPushModalViewShowFromBottom:
+            self.modalView.center = CGPointMake(self.center.x, self.bounds.size.height + self.height / 2);
+            break;
+        case MZPushModalViewShowFromTop:
+            self.modalView.center = CGPointMake(self.center.x, -self.height / 2);
+            break;
+    }
+}
+
+- (CGPoint)modalViewShowCenter
+{
+    switch (_direction) {
+        case MZPushModalViewShowFromBottom:
+            return CGPointMake(self.center.x, self.bounds.size.height - self.height / 2);
+            break;
+        case MZPushModalViewShowFromTop:
+            return CGPointMake(self.center.x, self.height / 2);
+            break;
+    }
+
+}
+
+- (CGPoint)modalViewDismissCenter
+{
+    switch (_direction) {
+        case MZPushModalViewShowFromBottom:
+            return CGPointMake(self.center.x, self.bounds.size.height + self.height / 2);
+            break;
+        case MZPushModalViewShowFromTop:
+            return CGPointMake(self.center.x, -self.height / 2);
+            break;
+    }
+}
+
 - (UIView *)blackView
 {
     if (!_blackView) {
@@ -160,5 +221,10 @@ static NSTimeInterval durationForward = 0.25;
 - (NSTimeInterval)totalDuration
 {
     return durationForward + durationBack;
+}
+
+- (CGFloat)angle
+{
+    return M_PI_4 / 3 * self.direction;
 }
 @end

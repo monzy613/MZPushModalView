@@ -26,8 +26,8 @@
 - (void)buttonPressed:(id)sender
 {
     UIView *modalView = [self modalView];
-    self.pushModalView = [[MZPushModalView alloc] initWithModalView:modalView rootView:self.view];
-    [self.pushModalView showModal];
+//    self.pushModalView = [MZPushModalView showModalView:modalView rootView:nil direction:MZPushModalViewShowFromBottom];
+    self.pushModalView = [MZPushModalView showModalView:modalView rootView:nil];
 }
 
 - (void)modalViewButtonPressed:(id)sender
