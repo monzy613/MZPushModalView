@@ -11,13 +11,20 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Quick use
 ###Objc
+```objc
     #import <MZPushModalView/MZPushModalView.h>
     //...
     [MZPushModalView showModalView:modalView rootView:nil direction:MZPushModalViewShowFromTop];
-    [MZPushModalView showModalView:modalView rootView:nil];//default is from bottom
-###Swift(still some problems)
-    MZPushModalView(modalView: modalView, rootView: nil)
-
+    //or
+    [MZPushModalView showModalView:modalView rootView:nil];//MZPushModalViewShowFromBottom by default
+```
+###Swift
+```swift
+    import MZPushModalView
+    MZPushModalView.showModalView(modalView, rootView: nil, direction: .FromTop)
+    //or
+    MZPushModalView(modalView: modalView, rootView: nil)//.FromBottom by default
+```
 ## snapshots
 
 ![img](https://github.com/monzy613/MZPushModalView/blob/master/snapshots/1.jpg?raw=true)
@@ -28,7 +35,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-MZPushModalView is available through [CocoaPods](http://cocoapods.org). To install
+To install
 it, simply add the following line to your Podfile:
 
 ```ruby
