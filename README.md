@@ -8,9 +8,15 @@
 ## Usage
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
+
+## Quick use
+###Objc
+    #import <MZPushModalView/MZPushModalView.h>
+    //...
     [MZPushModalView showModalView:modalView rootView:nil direction:MZPushModalViewShowFromTop];
     [MZPushModalView showModalView:modalView rootView:nil];//default is from bottom
-
+###Swift(still some problems)
+    MZPushModalView(modalView: modalView, rootView: nil)
 
 ## snapshots
 
