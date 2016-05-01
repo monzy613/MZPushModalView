@@ -17,14 +17,14 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = "a push modal view"
+  s.description      = "a push modal view transition animation 3D style "
 
   s.homepage         = "https://github.com/monzy613/MZPushModalView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "monzy613" => "monzy613@gmail.com" }
   s.source           = { :git => "https://github.com/monzy613/MZPushModalView.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+
 
   s.ios.deployment_target = '8.0'
 
